@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ledger System - GPay Dark</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gpay-blue': '#8ab4f8', /* Dark mode accent blue */
+                        'gpay-blue-btn': '#1a73e8',
+                        'gpay-light-blue': 'rgba(138, 180, 248, 0.1)',
+                        'gpay-green': '#81c995',
+                        'gpay-gray': '#9aa0a6',
+                        'gpay-border': '#3c4043',
+                        'gpay-surface': '#202124',
+                        'gpay-bg': '#000000',
+                        'gpay-input': 'rgba(255,255,255,0.04)'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gpay-bg flex items-center justify-center min-h-screen text-[#e8eaed]">
+    <!-- Google Auth Invisible Container -->
+    <div id="g_id_onload"
+         data-client_id="570969230137-25batnsqv04q9ase30g8usae8onojcrc.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse"
+         data-auto_prompt="false">
+    </div>
+
+    <!-- Auth Card -->
+    <div class="bg-gpay-surface border border-gpay-border px-8 pt-10 pb-12 rounded-[2rem] shadow-2xl w-full max-w-[420px] relative overflow-hidden">
+        
+        <!-- Top decoration (Google colors) -->
+        <div class="absolute top-0 left-0 w-full h-1 flex">
+            <div class="w-1/4 h-full bg-[#ea4335]"></div>
+            <div class="w-1/4 h-full bg-[#fbbc05]"></div>
+            <div class="w-1/4 h-full bg-[#34a853]"></div>
+            <div class="w-1/4 h-full bg-[#4285f4]"></div>
+        </div>
+
+        <div class="text-center mb-8">
+            <h2 class="text-[28px] font-bold tracking-tight text-white flex items-center justify-center gap-1.5">
+                <svg viewBox="0 0 24 24" class="w-7 h-7 text-gpay-blue mb-0.5" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+                Ledger<span class="text-gpay-blue">Pay</span>
+            </h2>
+            <p class="text-gpay-gray mt-1.5 text-[0.95rem] font-medium">Fast, simple, and secure</p>
+        </div>
+
+        <!-- Login Form -->
+        <form id="login-form" class="flex flex-col gap-4">
+            <div>
+                <input type="email" id="login-email" required placeholder="Email or Phone" 
+                       class="w-full px-4 py-3.5 rounded-xl bg-gpay-input border border-gpay-border focus:ring-1 focus:ring-gpay-blue focus:border-gpay-blue outline-none transition-all placeholder-gray-500 font-medium text-white">
+            </div>
+            <div>
+                <input type="password" id="login-password" required placeholder="Password" 
+                       class="w-full px-4 py-3.5 rounded-xl bg-gpay-input border border-gpay-border focus:ring-1 focus:ring-gpay-blue focus:border-gpay-blue outline-none transition-all placeholder-gray-500 font-medium text-white">
+            </div>
+            
+            <button type="submit" class="w-full bg-gpay-blue-btn hover:bg-blue-600 text-white font-medium py-3.5 rounded-full transition-colors shadow-sm mt-3 text-base">
+                Sign in
+            </button>
+            
+            <div class="relative flex items-center py-4">
+                <div class="flex-grow border-t border-gpay-border"></div>
+                <span class="flex-shrink-0 mx-4 text-gpay-gray text-xs font-medium uppercase tracking-wider">or sign in with</span>
+                <div class="flex-grow border-t border-gpay-border"></div>
+            </div>
+
+            <!-- Dark Theme Google Button -->
+            <div class="flex justify-center -mt-2">
+                <div class="g_id_signin" data-type="standard" data-theme="filled_black" data-text="sign_in_with" data-shape="pill" data-logo_alignment="center"></div>
+            </div>
+            
+            <p class="text-center text-sm text-gpay-gray mt-5 border-t border-gpay-border pt-5">
+                Don't have an account? <a href="#" id="show-register" class="text-gpay-blue font-semibold hover:text-blue-300">Create one</a>
+            </p>
+        </form>
+
+        <!-- Register Form (Hidden initially) -->
+        <form id="register-form" class="hidden flex-col gap-4">
+            <div>
+                <input type="text" id="register-name" required placeholder="Legal Name" 
+                       class="w-full px-4 py-3.5 rounded-xl bg-gpay-input border border-gpay-border focus:ring-1 focus:ring-gpay-blue focus:border-gpay-blue outline-none transition-all font-medium text-white placeholder-gray-500">
+            </div>
+            <div>
+                <input type="email" id="register-email" required placeholder="Email Address" 
+                       class="w-full px-4 py-3.5 rounded-xl bg-gpay-input border border-gpay-border focus:ring-1 focus:ring-gpay-blue focus:border-gpay-blue outline-none transition-all font-medium text-white placeholder-gray-500">
+            </div>
+            <div>
+                <input type="password" id="register-password" required placeholder="Create Password" 
+                       class="w-full px-4 py-3.5 rounded-xl bg-gpay-input border border-gpay-border focus:ring-1 focus:ring-gpay-blue focus:border-gpay-blue outline-none transition-all font-medium text-white placeholder-gray-500">
+            </div>
+            
+            <button type="submit" class="w-full bg-gpay-blue-btn hover:bg-blue-600 text-white font-medium py-3.5 rounded-full transition-colors shadow-sm mt-3 text-base">
+                Agree & Create Profile
+            </button>
+            
+             <!-- Dark Theme Google Button -->
+            <div class="flex justify-center mt-1">
+                <div class="g_id_signin" data-type="standard" data-theme="filled_black" data-text="signup_with" data-shape="pill" data-logo_alignment="center"></div>
+            </div>
+            
+            <p class="text-center text-sm text-gpay-gray mt-5 border-t border-gpay-border pt-5">
+                Already registered? <a href="#" id="show-login" class="text-gpay-blue font-semibold hover:text-blue-300">Sign in instead</a>
+            </p>
+        </form>
+    </div>
+
+    <div id="toast" class="toast hidden fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-900 border border-gpay-border text-white px-6 py-3 rounded-full shadow-2xl font-medium text-sm flex items-center gap-2 z-50"></div>
+    <script src="/js/auth.js"></script>
+</body>
+</html>

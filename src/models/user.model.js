@@ -17,9 +17,18 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [ true, "Password is required for creating an account" ],
+        // Removed required: true to allow Google OAuth users (who don't have passwords)
         minlength: [ 6, "password should contain more than 6 character" ],
         select: false
+    },
+    authProvider: {
+        type: String,
+        enum: ['local', 'google'],
+        default: 'local'
+    },
+    googleId: {
+        type: String,
+        default: null
     },
     systemUser: {
         type: Boolean,
@@ -32,7 +41,7 @@ const userSchema = new mongoose.Schema({
 })
 
 userSchema.pre("save", async function () {
-    if (!this.isModified("password")) {
+    if (!this.isModified("password") || !this.password) {
         return
     }
 
@@ -44,11 +53,11 @@ userSchema.pre("save", async function () {
 })
 
 userSchema.methods.comparePassword = async function (password) {
+    if(!this.password) return false; // If Google OAuth user, no local password
 
     console.log(password, this.password)
 
     return await bcrypt.compare(password, this.password)
-
 }
 
 

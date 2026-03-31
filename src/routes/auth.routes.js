@@ -11,6 +11,9 @@ router.post("/register", authController.userRegisterController)
 /* POST /api/auth/login */
 router.post("/login",authController.userLoginController)
 
+/* POST /api/auth/google */
+router.post("/google", authController.googleLoginController)
+
 /**
  * - POST /api/auth/logout
  */

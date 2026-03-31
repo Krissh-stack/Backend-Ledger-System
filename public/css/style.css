@@ -1,0 +1,29 @@
+/* Replaced heavily by Tailwind Play CDN */
+
+/* Hide scrollbar for horizontal scrolling lists */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Toast container animations */
+.toast {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    transform: translate(-50%, 20px) !important; /* using !important due to tailwind conflict */
+    pointer-events: none;
+}
+
+.toast.show {
+    opacity: 1;
+    display: flex !important;
+    transform: translate(-50%, 0) !important;
+}
+
+/* Success/Error specifics if injected without Tailwind classes */
+.toast.success { border-left: 4px solid #34a853; }
+.toast.error { border-left: 4px solid #ea4335; }
+.toast.info { border-left: 4px solid #4285f4; }

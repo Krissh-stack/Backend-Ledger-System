@@ -2,6 +2,9 @@ const userModel = require("../models/user.model")
 const jwt = require("jsonwebtoken")
 const emailService = require("../services/email.service")
 const tokenBlackListModel = require("../models/blackList.model")
+const { OAuth2Client } = require('google-auth-library')
+
+const client = new OAuth2Client(process.env.CLIENT_ID)
 
 /**
 * - user register controller
@@ -111,8 +114,54 @@ async function userLogoutController(req, res) {
 }
 
 
+/**
+ * - Google Login/Register Controller
+ * - POST /api/auth/google
+ */
+async function googleLoginController(req, res) {
+    const { credential } = req.body;
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: credential,
+            audience: process.env.CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        const { email, name, sub: googleId } = payload;
+        
+        let user = await userModel.findOne({ email });
+
+        if (!user) {
+            user = await userModel.create({
+                email,
+                name,
+                authProvider: 'google',
+                googleId
+            });
+            await emailService.sendRegistrationEmail(user.email, user.name);
+        } else {
+            if(!user.googleId) {
+                user.googleId = googleId;
+                await user.save();
+            }
+        }
+
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "3d" });
+        res.cookie("token", token);
+
+        res.status(200).json({
+            user: { _id: user._id, email: user.email, name: user.name },
+            token
+        });
+    } catch (err) {
+        console.error("Google Auth Error:", err);
+        return res.status(401).json({ message: "Invalid Google token" });
+    }
+}
+
+
 module.exports = {
     userRegisterController,
     userLoginController,
-    userLogoutController
+    userLogoutController,
+    googleLoginController
 }

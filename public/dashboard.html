@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LedgerPay - Dashboard Dark</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gpay-blue': '#8ab4f8', /* Accent blue */
+                        'gpay-blue-btn': '#1a73e8',
+                        'gpay-light-blue': 'rgba(138, 180, 248, 0.12)',
+                        'gpay-green': '#81c995',
+                        'gpay-green-bg': 'rgba(129, 201, 149, 0.1)',
+                        'gpay-gray': '#9aa0a6',
+                        'gpay-border': '#3c4043',
+                        'gpay-surface': '#202124',
+                        'gpay-surface-hover': '#303134',
+                        'gpay-bg': '#000000',
+                        'gpay-input': 'rgba(255,255,255,0.06)'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gpay-bg min-h-screen text-[#e8eaed] pb-20 md:pb-0 selection:bg-gpay-blue selection:text-black">
+
+    <!-- Top Navigation -->
+    <nav class="bg-gpay-surface border-b border-gpay-border px-4 py-3 sticky top-0 z-40">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <svg viewBox="0 0 24 24" class="w-6 h-6 text-gpay-blue" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+                <span class="text-xl font-bold tracking-tight text-white">Ledger<span class="text-gpay-blue">Pay</span></span>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <button class="relative p-2 text-gpay-gray hover:text-white hover:bg-gpay-surface-hover rounded-full transition-colors hidden md:block">
+                    <i class="fa-regular fa-bell text-xl"></i>
+                    <span class="absolute top-2 right-2 w-2 h-2 bg-red-400 rounded-full"></span>
+                </button>
+                <div class="w-9 h-9 rounded-full bg-gpay-light-blue flex items-center justify-center text-gpay-blue font-bold border border-gpay-border cursor-pointer" title="Profile">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <button id="logout-btn" class="text-sm font-medium text-gpay-gray hover:text-red-400 transition-colors ml-2 hidden sm:block">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="max-w-4xl mx-auto p-4 md:p-6 lg:p-8 flex flex-col gap-6 pt-6">
+
+        <!-- Combined Balance Hero Details -->
+        <section class="bg-gpay-surface rounded-[2rem] p-6 border border-gpay-border flex flex-col items-center justify-center relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gpay-light-blue rounded-full blur-[40px] -mr-10 -mt-10"></div>
+            <div class="absolute bottom-0 left-0 w-32 h-32 bg-[rgba(129,201,149,0.05)] rounded-full blur-[40px] -ml-10 -mb-10"></div>
+
+            <span class="text-sm font-medium text-gpay-gray uppercase tracking-wider mb-2 relative z-10">Total Combined Balance</span>
+            <div class="text-[2.5rem] font-bold text-white tracking-tight mb-1 flex items-start relative z-10">
+                <span class="text-2xl mt-1.5 mr-1 font-semibold text-gpay-gray">₹</span>
+                <span id="total-balance-display">0.00</span>
+            </div>
+            <div class="text-xs text-gpay-green font-medium bg-gpay-green-bg border border-[rgba(129,201,149,0.2)] px-3 py-1 rounded-full mt-2 flex items-center gap-1.5 relative z-10">
+                <i class="fa-solid fa-shield-halved"></i> Secure & Protected
+            </div>
+        </section>
+
+        <!-- Quick Actions Grid -->
+        <section class="grid grid-cols-4 gap-2 md:gap-4 mt-2">
+            <!-- Send Money (Transfer) -->
+            <button onclick="document.getElementById('transfer-modal').classList.remove('hidden')" class="flex flex-col items-center gap-2.5 group">
+                <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gpay-blue-btn text-white flex items-center justify-center text-xl shadow-lg group-hover:bg-blue-600 transition-all group-hover:scale-[1.03]">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                </div>
+                <span class="text-xs md:text-sm font-medium text-center text-[#e8eaed] leading-tight">Send<br>Money</span>
+            </button>
+
+            <!-- Scan QR (Dummy) -->
+            <button onclick="showToast('Scan QR Code is coming soon!', 'info')" class="flex flex-col items-center gap-2.5 group">
+                <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gpay-surface border border-gpay-border text-gpay-blue flex items-center justify-center text-xl group-hover:bg-gpay-surface-hover transition-all group-hover:scale-[1.03]">
+                    <i class="fa-solid fa-qrcode"></i>
+                </div>
+                <span class="text-xs md:text-sm font-medium text-center text-[#e8eaed] leading-tight">Scan<br>Any QR</span>
+            </button>
+
+            <!-- Pay Bills (Dummy) -->
+            <button onclick="showToast('Bill Payments are coming soon!', 'info')" class="flex flex-col items-center gap-2.5 group">
+                <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gpay-surface border border-gpay-border text-gpay-blue flex items-center justify-center text-xl group-hover:bg-gpay-surface-hover transition-all group-hover:scale-[1.03]">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                </div>
+                <span class="text-xs md:text-sm font-medium text-center text-[#e8eaed] leading-tight">Pay<br>Bills</span>
+            </button>
+
+            <!-- Add Account (Real) -->
+            <button id="add-account-btn" class="flex flex-col items-center gap-2.5 group">
+                <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gpay-surface border border-gpay-border text-gpay-blue flex items-center justify-center text-xl group-hover:bg-gpay-surface-hover transition-all group-hover:scale-[1.03]">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                <span class="text-xs md:text-sm font-medium text-center text-[#e8eaed] leading-tight">Add<br>Account</span>
+            </button>
+        </section>
+
+        <!-- Bank Accounts Horizontal List -->
+        <section class="mt-4">
+            <div class="flex justify-between items-end mb-4 px-1">
+                <h3 class="text-lg font-bold text-white">My Active Accounts</h3>
+            </div>
+            
+            <div id="accounts-list" class="flex overflow-x-auto pb-4 gap-4 px-1 snap-x no-scrollbar">
+                <!-- Accounts will be injected here via JS -->
+                 <div class="text-sm text-gpay-gray font-medium p-4">Loading accounts...</div>
+            </div>
+        </section>
+
+        <!-- Recent Activity Module / System Funding Section -->
+        <section class="grid md:grid-cols-2 gap-6 mt-2">
+            
+            <!-- People / Recent (Mocked UI) -->
+            <div class="bg-gpay-surface rounded-3xl p-5 border border-gpay-border">
+                <h3 class="font-bold text-white mb-4 px-1">Recent People & Businesses</h3>
+                <div class="flex overflow-x-auto gap-4 pb-2 no-scrollbar">
+                    <div class="cursor-pointer group" onclick="showToast('Not implemented', 'info')">
+                        <img src="https://ui-avatars.com/api/?name=Amazon&background=random" class="w-16 h-16 rounded-full bg-black shadow-sm border border-[#3c4043] group-hover:border-gpay-blue transition-colors" alt="">
+                        <p class="text-[0.7rem] text-center font-medium mt-2 w-16 truncate text-gpay-gray group-hover:text-[#e8eaed]">Amazon</p>
+                    </div>
+                    <div class="cursor-pointer group" onclick="showToast('Not implemented', 'info')">
+                        <img src="https://ui-avatars.com/api/?name=Zomato&background=random" class="w-16 h-16 rounded-full bg-black shadow-sm border border-[#3c4043] group-hover:border-gpay-blue transition-colors" alt="">
+                        <p class="text-[0.7rem] text-center font-medium mt-2 w-16 truncate text-gpay-gray group-hover:text-[#e8eaed]">Zomato</p>
+                    </div>
+                    <div class="cursor-pointer group" onclick="showToast('Not implemented', 'info')">
+                        <img src="https://ui-avatars.com/api/?name=Uber&background=random" class="w-16 h-16 rounded-full bg-black shadow-sm border border-[#3c4043] group-hover:border-gpay-blue transition-colors" alt="">
+                        <p class="text-[0.7rem] text-center font-medium mt-2 w-16 truncate text-gpay-gray group-hover:text-[#e8eaed]">Uber</p>
+                    </div>
+                    <div class="flex flex-col items-center pt-2">
+                        <div class="w-12 h-12 rounded-full border border-gpay-border flex items-center justify-center text-gpay-gray cursor-pointer hover:bg-gpay-surface-hover hover:text-white transition-colors">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Funding Module (Developer Tools) -->
+            <div class="bg-[rgba(138,180,248,0.04)] rounded-3xl p-5 border border-[rgba(138,180,248,0.1)] relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-gpay-light-blue rounded-full blur-[40px] -mr-10 -mt-10"></div>
+                
+                <div class="flex items-center gap-2 mb-4 relative">
+                    <i class="fa-solid fa-coins text-gpay-blue"></i>
+                    <h3 class="font-bold text-white">Developer Operations</h3>
+                </div>
+                
+                <p class="text-xs text-gpay-gray mb-4">Load initial testing funds directly from the system ledger into any active account.</p>
+                
+                <form id="initial-funds-form" class="space-y-3 relative z-10">
+                    <select id="fund-target" required class="w-full text-sm px-3 py-3 rounded-xl bg-gpay-input border border-gpay-border focus:border-gpay-blue outline-none text-[#e8eaed]">
+                        <option value="" disabled selected class="text-black">Loading destination accounts...</option>
+                    </select>
+                    <div class="flex gap-2">
+                        <div class="relative flex-grow">
+                            <span class="absolute left-3 top-3 text-gpay-gray font-medium">₹</span>
+                            <input type="number" id="fund-amount" min="1" step="0.01" required placeholder="Amount" 
+                                class="w-full pl-8 pr-3 py-3 text-sm rounded-xl bg-gpay-input border border-gpay-border focus:border-gpay-blue outline-none text-white placeholder-gray-500">
+                        </div>
+                        <button type="submit" class="bg-gpay-blue-btn hover:bg-blue-600 text-white px-5 py-3 rounded-xl font-medium text-sm transition-colors whitespace-nowrap shadow-sm">
+                            Load Funds
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Modals -->
+
+    <!-- Add Account Modal -->
+    <div id="account-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-gpay-surface rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl border border-gpay-border relative">
+            <div class="px-6 py-5 flex justify-between items-center border-b border-gpay-border">
+                <h3 class="font-bold text-lg text-white">Create New Account</h3>
+                <button id="close-modal" class="text-gpay-gray hover:text-white w-8 h-8 flex items-center justify-center rounded-full hover:bg-gpay-surface-hover transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="create-account-form" class="p-6">
+                <p class="text-sm text-gpay-gray mb-6 leading-relaxed">Opening a new ledger virtual account takes just one tap. It will be immediately activated.</p>
+                <button type="submit" class="w-full bg-gpay-blue-btn hover:bg-blue-600 text-white font-medium py-3.5 rounded-xl transition-colors mt-2 shadow-sm">
+                    Open Bank Account
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Transfer Modal -->
+    <div id="transfer-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-gpay-surface border border-gpay-border rounded-3xl w-full max-w-md overflow-hidden shadow-2xl">
+            <div class="px-6 py-5 border-b border-gpay-border flex justify-between items-center">
+                <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane text-gpay-blue"></i> Send Money
+                </h3>
+                <button onclick="document.getElementById('transfer-modal').classList.add('hidden')" class="text-gpay-gray hover:text-white w-8 h-8 flex items-center justify-center rounded-full hover:bg-gpay-surface-hover transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="transaction-form" class="p-6 space-y-4">
+                
+                <div>
+                    <label class="block text-[11px] font-semibold uppercase tracking-wider text-gpay-gray mb-2">Paying From</label>
+                    <select id="tx-from" required class="w-full text-base font-medium px-4 py-3.5 rounded-xl bg-gpay-input border border-gpay-border focus:border-gpay-blue outline-none transition-colors text-white">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                
+                <div class="flex justify-center -my-3 relative z-10 pointer-events-none">
+                    <div class="bg-gpay-surface rounded-full p-1.5 border border-gpay-border text-gpay-gray shadow-sm">
+                        <i class="fa-solid fa-arrow-down text-sm"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-semibold uppercase tracking-wider text-gpay-gray mb-2 mt-1 relative z-0">Paying To</label>
+                    <select id="tx-to" required class="w-full text-base font-medium px-4 py-3.5 rounded-xl bg-gpay-input border border-gpay-border focus:border-gpay-blue outline-none transition-colors text-white">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+
+                <div class="pt-4">
+                    <label class="block text-[11px] font-semibold uppercase tracking-wider text-gpay-gray mb-2">Amount</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3.5 text-xl font-bold text-gpay-gray">₹</span>
+                        <input type="number" id="tx-amount" min="1" step="0.01" required placeholder="0.00" 
+                            class="w-full pl-9 pr-4 py-3.5 text-2xl font-bold tracking-tight rounded-xl bg-gpay-input border border-gpay-border focus:border-gpay-blue outline-none transition-colors text-white placeholder-gray-600">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-gpay-blue-btn hover:bg-blue-600 text-white font-semibold text-lg py-4 rounded-xl transition-colors mt-6 flex items-center justify-center gap-2 shadow-sm">
+                    Pay Now <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation (Hidden on md+) -->
+    <div class="md:hidden fixed bottom-0 left-0 w-full bg-[#1b1b1b] border-t border-[#3c4043] px-6 py-3 flex justify-between z-40 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.5)]">
+        <div class="flex flex-col items-center gap-1 cursor-pointer text-gpay-blue">
+            <i class="fa-solid fa-house text-xl mb-0.5"></i>
+            <span class="text-[10px] font-bold">Home</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 cursor-pointer text-gpay-gray hover:text-white transition-colors" onclick="showToast('Coming soon', 'info')">
+            <i class="fa-solid fa-clock-rotate-left text-xl mb-0.5"></i>
+            <span class="text-[10px] font-medium">History</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 border border-[#3c4043] bg-gpay-surface rounded-full w-[52px] h-[52px] justify-center -mt-7 cursor-pointer shadow-lg hover:border-gpay-blue text-gpay-blue transition-colors" onclick="document.getElementById('transfer-modal').classList.remove('hidden')">
+            <i class="fa-solid fa-qrcode text-xl"></i>
+        </div>
+        <div class="flex flex-col items-center gap-1 cursor-pointer text-gpay-gray hover:text-white transition-colors" onclick="showToast('Coming soon', 'info')">
+            <i class="fa-solid fa-wallet text-xl mb-0.5"></i>
+            <span class="text-[10px] font-medium">Offers</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 cursor-pointer text-gpay-gray hover:text-red-400 transition-colors" onclick="document.getElementById('logout-btn').click()">
+            <i class="fa-solid fa-right-from-bracket text-xl mb-0.5"></i>
+            <span class="text-[10px] font-medium">Exit</span>
+        </div>
+    </div>
+
+    <div id="toast" class="toast hidden fixed bottom-24 md:bottom-10 left-1/2 transform -translate-x-1/2 bg-white text-gpay-dark px-6 py-3 rounded-full shadow-lg font-bold text-sm flex items-center gap-2 z-[60]"></div>
+
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>

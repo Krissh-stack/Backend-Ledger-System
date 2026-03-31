@@ -1,5 +1,6 @@
 const express = require("express")
 const cookieParser = require("cookie-parser")
+const path = require("path")
 
 
 
@@ -20,9 +21,8 @@ const transactionRoutes = require("./routes/transaction.routes")
  * - Use Routes
  */
 
-app.get("/", (req, res) => {
-    res.send("Ledger Service is up and running")
-})
+// Serve Static Frontend UI
+app.use(express.static(path.join(__dirname, "../public")))
 
 app.use("/api/auth", authRouter)
 app.use("/api/accounts", accountRouter)
