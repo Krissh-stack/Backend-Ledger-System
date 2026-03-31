@@ -78,6 +78,8 @@ async function userLoginController(req, res) {
         token
     })
 
+    await emailService.sendLoginEmail(user.email, user.name)
+
 }
 
 
